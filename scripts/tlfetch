@@ -1,0 +1,13 @@
+#!/bin/bash -e
+
+TLNET=https://ftp.cc.uoc.gr/mirrors/CTAN/systems/texlive/tlnet
+
+mkdir -p tlarchive tldist
+
+for pkg in $@; do
+    # Use IPv4
+    wget -4 "$TLNET/archive/$pkg.tar.xz" -O "tlarchive/$pkg.tar.xz"
+
+    tar xvf "tlarchive/$pkg.tar.xz" -C tldist 2>&1 | wc -l
+    echo
+done
