@@ -4,15 +4,19 @@ ROOT = $SELFAUTODIR
 DROOT = $ROOT/dist
 TLROOT = $ROOT/tldist
 
-TEXFORMATS = $DROOT
+TEXFORMATS = $DROOT:$DROOT//
 
-TFMFONTS = $DROOT/fonts//:$TLROOT//
-T1FONTS = $DROOT/fonts//:$TLROOT//
-PKFONTS = $DROOT/fonts//:$TLROOT//
+TFMFONTS = $DROOT/fonts//:$TLROOT/fonts//
+T1FONTS = $DROOT/fonts//:$TLROOT/fonts//
+PKFONTS = $DROOT/fonts//:$TLROOT/fonts//
+ENCFONTS = $TLROOT/fonts/enc//
 
 TEXFONTMAPS = $DROOT
 
-TEXINPUTS = .:$DROOT:$DROOT/fonts/fd:$TLROOT//
+TEXINPUTS = .:$DROOT/:$DROOT/fonts/fd:$TLROOT//
+
+MFINPUTS = $TLROOT/texmf-dist/metafont//:$TLROOT/fonts/source//
+MFBASES = $DROOT/base
 
 % WEB2C = .;../web2c
 

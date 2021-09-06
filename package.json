@@ -1,0 +1,8 @@
+{
+  "type": "module",
+  "dependencies": {
+    "child-process-promise": "^2.2.1",
+    "commander": "^8.1.0",
+    "mkdirp": "^1.0.4"
+  }
+}
