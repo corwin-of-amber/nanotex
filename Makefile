@@ -3,6 +3,10 @@ TLFETCH = ./scripts/tlfetch
 DIST = dist
 TLDIST = tldist
 
+ifeq ($(FETCH),no)
+TLFETCH = \# (skipping fetch)
+endif
+
 
 boot: fetch-boot
 	# reduces dependencies by restricting to US-en
@@ -23,18 +27,37 @@ fetch-latex:
 	$(TLFETCH) latex latexconfig l3kernel latex-fonts
 
 
-metafont:
+metafont: metafont-fetch
 	./bin/mf -ini '\input plain; input modes; dump'
 	mkdir -p $(DIST)/base
 	mv plain.base $(DIST)/base/mf.base
 
 metafont-fetch:
-	./tlfetch metafont modes
+	$(TLFETCH) metafont modes
 
-ec:
+ec: ec-fetch
 	./scripts/nanotex font \
 	    ${addprefix ecrm, 0500 0600 0700 0900 1000 1200 1440 1728} \
 		${addprefix ecbx, 0900 1000 1200 1440} \
 		${addprefix ecss, 1000 1200} \
 		${addprefix ecti, 0900 1000} \
 		${addprefix ectt, 0900 1000}
+
+ec-fetch:
+	$(TLFETCH) ec
+
+# -- Distribution tarballs --
+
+.PHONY: dist FORCE
+
+FORCE:
+
+dist: dist.tar tldist.tar
+
+dist.tar: FORCE
+	@rm -f dist.tar
+	tar cf dist.tar --strip-components=1 dist
+
+tldist.tar: FORCE
+	@rm -rf tldist.tar
+	tar cf tldist.tar --exclude archive --strip-components=1 tldist	
