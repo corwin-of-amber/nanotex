@@ -1,5 +1,7 @@
 .*.swp
 .swp
+/tmp
+/missfont.log
 
 _build
 node_modules

@@ -1,5 +1,6 @@
 
 TLFETCH = ./scripts/tlfetch
+NANOTEX = ./scripts/nanotex
 DIST = dist
 TLDIST = tldist
 
@@ -18,6 +19,7 @@ boot: fetch-boot
 
 fetch-boot:
 	$(TLFETCH) plain hyphen-base cm knuth-lib tex-ini-files pdftex etex
+	$(NANOTEX) font --map pdftex
 
 latex: fetch-latex
 	touch dist/UnicodeData.txt  # skip pkg `unicode-data`
@@ -27,24 +29,37 @@ fetch-latex:
 	$(TLFETCH) latex latexconfig l3kernel latex-fonts
 
 
-metafont: metafont-fetch
+metafont: fetch-metafont
 	./bin/mf -ini '\input plain; input modes; dump'
 	mkdir -p $(DIST)/base
 	mv plain.base $(DIST)/base/mf.base
 
-metafont-fetch:
+fetch-metafont:
 	$(TLFETCH) metafont modes
 
-ec: ec-fetch
-	./scripts/nanotex font \
+cm: fetch-cm
+	$(NANOTEX) font --pk cmmi9  # the remaining bitmap fonts seem to be included in `cm` already?
+	$(NANOTEX) font --map cm
+
+fetch-cm:
+	$(TLFETCH) cm
+
+ec: fetch-ec
+	$(NANOTEX) font --pk \
 	    ${addprefix ecrm, 0500 0600 0700 0900 1000 1200 1440 1728} \
 		${addprefix ecbx, 0900 1000 1200 1440} \
 		${addprefix ecss, 1000 1200} \
 		${addprefix ecti, 0900 1000} \
 		${addprefix ectt, 0900 1000}
 
-ec-fetch:
+fetch-ec:
 	$(TLFETCH) ec
+
+lm: fetch-lm
+	$(NANOTEX) font --map lm
+
+fetch-lm:
+	$(TLFETCH) lm
 
 # -- Distribution tarballs --
 
@@ -60,4 +75,4 @@ dist.tar: FORCE
 
 tldist.tar: FORCE
 	@rm -rf tldist.tar
-	tar cf tldist.tar --exclude archive --strip-components=1 tldist	
+	tar cf tldist.tar --strip-components=1 tldist	
