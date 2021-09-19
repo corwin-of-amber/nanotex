@@ -5,6 +5,7 @@
 
 _build
 node_modules
+/workdir
 
 /bin
 /dist

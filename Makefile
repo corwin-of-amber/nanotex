@@ -1,3 +1,9 @@
+TEXLIVE_GIT = git@github.com:TeX-Live/texlive-source.git
+TEXLIVE_GIT_TAG = tags/texlive-2021.3
+
+ENGINES = tex pdftex bibtex
+
+WEB2C_DIR = workdir/texlive-build/texk/web2c
 
 TLFETCH = ./scripts/tlfetch
 NANOTEX = ./scripts/nanotex
@@ -8,6 +14,27 @@ ifeq ($(FETCH),no)
 TLFETCH = \# (skipping fetch)
 endif
 
+
+engines: workdir/texlive-build
+	( cd $(WEB2C_DIR) && make $(ENGINES) )
+
+engines+wasm: workdir/texlive-build
+	( cd $(WEB2C_DIR) && npx wasi-kit make $(ENGINES) )
+	cp ${foreach e, $(ENGINES), $(WEB2C_DIR)/$e.wasm} bin/
+
+clean-engines:
+	( cd $(WEB2C_DIR) && make clean )
+
+workdir/texlive-sources:
+	mkdir -p workdir
+	git clone -b $(TEXLIVE_GIT_TAG) --depth=1 $(TEXLIVE_GIT) $@
+
+workdir/texlive-build: workdir/texlive-sources
+	mkdir -p $@
+	( cd $@ && ../texlive-sources/configure \
+		--without-x --disable-shared --disable-all-pkgs \
+        --enable-tex --disable-synctex --disable-arm-neon )
+	( cd $@ && make )
 
 boot: fetch-boot
 	# reduces dependencies by restricting to US-en

@@ -1,0 +1,15 @@
+{
+    "tex": {
+        "output": "tex.wasm",
+        "args": ["-Wl,-allow-undefined"]
+    },
+    "pdftex": {
+        "output": "pdftex.wasm",
+        "args": ["-Wl,-allow-undefined"],
+        "noargs": ["re:^-Wl"]
+    },
+    "bibtex": {
+        "output": "bibtex.wasm",
+        "args": ["-Wl,-allow-undefined"]
+    }
+}
