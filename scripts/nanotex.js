@@ -143,20 +143,120 @@ class PackageRepository {
     }
 
     collectActions() {
-        let pkgName = fn => path.basename(fn).replace(/[.]tlpobj$/, '');
         return Object.fromEntries(this.tlpobjs().map(fn => {
             let actions = grepPrefix(fn, ['execute'])
                 .map(({ln}) => ln.split(/\s+/).slice(1));
-            if (actions.length) return [pkgName(fn), actions];
+            if (actions.length) return [this._pkgName(fn), actions];
         }).filter(x => x));
+    }
+
+    collectFiles() {
+        return Object.fromEntries(this.tlpobjs().map(fn => 
+            [this._pkgName(fn), this._getFiles(fn)]));
+    }
+
+    fileIndex() {
+        var byPackage = this.collectFiles(),
+            byFilename = this._byFilename(byPackage);
+
+        return {byPackage, byFilename};
+    }
+        
+    _byFilename(byPackage) {
+        var byFilename = new Map();
+        for (let [pkg, fns] of Object.entries(byPackage)) {
+            for (let fn of fns) {
+                var key = path.basename(fn),
+                    v = byFilename.get(key);
+                if (!v) byFilename.set(key, v = []);
+                v.push(pkg);
+            }
+        }
+        return byFilename;
     }
 
     tlpobjs() {
         return glob.sync(`${this.opts.metadir}/**/*.tlpobj`);
     }
 
+    tlpobj(pkg) {
+        return path.join(this.opts.metadir, 'tlpobj', `${pkg}.tlpobj`);
+    }
+
+    listFiles(pkg) {
+        for (let fn of this.getFiles(pkg))
+            console.log(fn);
+    }
+
+    getFiles(pkg) {
+        return this._getFiles(this.tlpobj(pkg));
+    }
+
+    _pkgName(tlpobj) {
+        return path.basename(tlpobj).replace(/[.]tlpobj$/, '');
+    }
+
+    _getFiles(tlpobj) {
+        var relocs = grepPrefix(tlpobj, [' ']);
+        return relocs.map(({ln}) => ln.replace(/^\s+RELOC\//, ''));
+    }
+
+    async probe(pkgs, opts) {
+        var tmp = this.opts.tmpdir, fn = path.join(tmp, 'probe.tex');
+        fs.mkdirSync(tmp, {recursive: true});
+        fs.writeFileSync(fn, `
+            \\RequirePackage{snapshot}
+            \\documentclass{${opts.class ?? 'article'}}
+            ${pkgs.map(pkg => `\\usepackage{${pkg}}`).join('\n')}
+            \\begin{document} \\end{document}
+        `);
+
+        try { await this._pdflatex(fn); } catch { return; }
+
+        var depsText = fs.readFileSync(fn.replace(/[.]tex$/, '.dep'), 'utf-8'),
+            deps = depsText.split(/\n+/).map(ln => {
+                var mo = / \*{(.*?)}\s*{(.*?)}/.exec(ln);
+                return mo && {kind: mo[1], name: mo[2]};
+            }).filter(x => x);
+        console.log(deps);
+
+        var idx = this.fileIndex(),
+            pkgs = new Set();
+        for (let {kind, name} of deps) {
+            var keys = [];
+            switch (kind) {
+                case 'file': keys = [name, `${name}.tex`]; break;
+                case 'class': keys = [`${name}.cls`]; break;
+                case 'package': keys = [`${name}.sty`]; break;
+            }
+            var lu = [].concat(...
+                keys.map(key => idx.byFilename.get(key) ?? []));
+            console.log(kind, name, lu);
+            for (let pkg of lu) pkgs.add(pkg);
+        }
+        pkgs.delete('snapshot');
+        console.log([...pkgs].join(' '));
+        return pkgs;
+    }
+
+    async _pdflatex(...args) {
+        var outdir = `-output-directory=${this.opts.tmpdir}`;
+        try {
+            await child.spawn(this._bin('pdflatex'), [outdir, ...args],
+                {stdio: ['ignore', 'inherit', 'inherit']});
+        }
+        catch (e) {
+            console.log(`[nanotex] pdflatex terminated with code=${e.code}`);
+            throw e;
+        }
+    }
+
+    _bin(fn) { return path.join(this.opts.bindir, fn); }
+
     static OPTS = {
-        metadir: 'tldist/tlpkg'
+        metadir: 'tldist/tlpkg',
+        bindir: 'bin',
+        tmpdir: '/tmp/nanotex'
     };
 }
 
@@ -186,6 +286,14 @@ function main() {
      .option('--pk', 'create bitmap fonts (.600pk)')
      .option('--map', 'update main map file with pfb associations')
      .action((opts, {args}) => fontFoundry.buildFonts(args, opts));
+
+    o.command('ls')
+     .action((opts, {args}) =>
+        args.forEach(pkg => packageRepository.listFiles(pkg)));
+
+    o.command('probe')
+     .option('--class <name>', 'set the document class [default: `article`]')
+     .action((opts, {args}) => packageRepository.probe(args, opts));
 
     o.parseAsync(process.argv)
         .catch(err => {
