@@ -1,5 +1,6 @@
 .*.swp
 .swp
+.DS_Store
 /tmp
 /missfont.log
 
@@ -12,3 +13,6 @@ node_modules
 /tldist
 /tlarchive
 /*.tar
+
+# This file is updated by `nanotex probe`
+/data/pkg-info.json

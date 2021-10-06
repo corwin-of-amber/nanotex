@@ -140,6 +140,7 @@ class PackageRepository {
 
     constructor(opts = PackageRepository.OPTS) {
         this.opts = opts;
+        this.db = new PackageInfoDB(opts);
     }
 
     collectActions() {
@@ -205,45 +206,41 @@ class PackageRepository {
         var tmp = this.opts.tmpdir, fn = path.join(tmp, 'probe.tex');
         fs.mkdirSync(tmp, {recursive: true});
         fs.writeFileSync(fn, `
-            \\RequirePackage{snapshot}
-            \\documentclass{${opts.class ?? 'article'}}
-            ${pkgs.map(pkg => `\\usepackage{${pkg}}`).join('\n')}
+            \\documentclass${this._pkgref(opts.class ?? 'article')}
+            ${pkgs.map(pkg => `\\usepackage${this._pkgref(pkg)}`).join('\n')}
             \\begin{document} \\end{document}
         `);
 
         try { await this._pdflatex(fn); } catch { return; }
 
-        var depsText = fs.readFileSync(fn.replace(/[.]tex$/, '.dep'), 'utf-8'),
-            deps = depsText.split(/\n+/).map(ln => {
-                var mo = / \*{(.*?)}\s*{(.*?)}/.exec(ln);
-                return mo && {kind: mo[1], name: mo[2]};
-            }).filter(x => x);
-        console.log(deps);
-
-        var idx = this.fileIndex(),
-            pkgs = new Set();
-        for (let {kind, name} of deps) {
-            var keys = [];
-            switch (kind) {
-                case 'file': keys = [name, `${name}.tex`]; break;
-                case 'class': keys = [`${name}.cls`]; break;
-                case 'package': keys = [`${name}.sty`]; break;
-            }
-            var lu = [].concat(...
-                keys.map(key => idx.byFilename.get(key) ?? []));
-            console.log(kind, name, lu);
-            for (let pkg of lu) pkgs.add(pkg);
+        var logText = fs.readFileSync(fn.replace(/[.]tex$/, '.log'), 'utf-8'),
+            deps = {files: this._parseFileDeps(logText), pkgs: {}},
+            idx = this.fileIndex();
+        for (let [k, v] of Object.entries(deps.files)) {
+            for (let from of idx.byFilename.get(k) ?? [])
+                for (let to of [].concat(...v.map(fn => 
+                                    idx.byFilename.get(fn) ?? [])))
+                    if (from !== to)
+                        (deps.pkgs[from] ??= new Set).add(to);
         }
-        pkgs.delete('snapshot');
-        console.log([...pkgs].join(' '));
-        return pkgs;
+        console.log(deps.pkgs);
+        this.db.recordDeps(deps.pkgs);
+        this.db.save();
+    }
+
+    _pkgref(pkg) {
+        var mo1 = pkg.match(/^(\[.*?\])(.*)$/),
+            mo2 = pkg.match(/^(.*?):(.*)$/);
+        return mo1 ? `${mo1[1]}{${mo1[2]}}` : 
+               mo2 ? `[${mo2[2]}]{${mo2[1]}}` : `{${pkg}}`;
     }
 
     async _pdflatex(...args) {
         var outdir = `-output-directory=${this.opts.tmpdir}`;
         try {
             await child.spawn(this._bin('pdflatex'), [outdir, ...args],
-                {stdio: ['ignore', 'inherit', 'inherit']});
+                {stdio: ['ignore', 'inherit', 'inherit'],
+                 env: {"max_print_line": 99999}});
         }
         catch (e) {
             console.log(`[nanotex] pdflatex terminated with code=${e.code}`);
@@ -253,11 +250,64 @@ class PackageRepository {
 
     _bin(fn) { return path.join(this.opts.bindir, fn); }
 
+    _parseFileDeps(logText) {
+        var trace = logText.matchAll(/[()]|[/][\w./]+[/]tldist[/][^\s()]+/g),
+            stack = [], deps = {};
+
+        for (let mo of trace) {
+            if (mo[0] == '(') stack.push('-');
+            else if (mo[0] == ')') stack.pop();
+            else if (stack.slice(-1)[0] == '-') {
+                var from = [...stack].reverse().find(x => x !== '-'),
+                    to = path.basename(mo[0]);
+                stack.splice(-1, 1, to);
+                if (from)
+                    (deps[from] ??= []).push(to);
+            }
+        }
+        if (stack.length) console.warn("dependency stack not empty");
+        return deps;
+    }
+
     static OPTS = {
         metadir: 'tldist/tlpkg',
+        dbfn: 'data/pkg-info.json',
         bindir: 'bin',
         tmpdir: '/tmp/nanotex'
     };
+}
+
+class PackageInfoDB {
+    constructor(opts) { this.opts = opts; }
+
+    open() { if (!this.root) this.load(); }
+
+    load() {
+        this.root = null;
+        try { fs.statSync(this.opts.dbfn); } catch { this.root = {}; }
+        this.root ??= JSON.parse(fs.readFileSync(this.opts.dbfn));
+        this.pkgs = this.root.packages ??= {};
+    }
+
+    save() {
+        if (this.root) {
+            fs.mkdirSync(path.dirname(this.opts.dbfn), {recursive: true});
+            fs.writeFileSync(this.opts.dbfn, JSON.stringify(this.root, null, 2));
+        }
+    }
+
+    recordDeps(pkg, deps) {
+        if (typeof pkg == 'object') {
+            for (let [k, deps] of Object.entries(pkg))
+                this.recordDeps(k, deps);
+        }
+        else {
+            this.open();
+            var pre = (this.pkgs[pkg] ??= {}).deps ??= [];
+            for (let d of deps)
+                if (!pre.includes(d)) pre.push(d);
+        }
+    }
 }
 
 const packageRepository = new PackageRepository();

@@ -1,0 +1,23 @@
+{
+  "packages": {
+    "latex": {
+      "deps": [
+        "amsfonts", "cite", "modes", "metafont", "l3kernel", "cm", "amsmath", "hyphen-base",
+        "pdftex", "etex", "latex-fonts", "amscls", "l3backend", "plain", "tex-ini-files",
+        "latexconfig", "knuth-lib", "ec"
+      ]
+    },
+    "lmodern": {
+      "meta": true,
+      "deps": ["lm"]
+    },
+    "acmart": {
+      "deps": ["preprint", "pbalance"],
+      "_comment": "indirect dep via \\AtEndPreamble"
+    },
+    "inconsolata": {
+      "deps": ["upquote"],
+      "_comment": "indirect dep via \\AtBeginDocument"
+    }
+  }
+}
