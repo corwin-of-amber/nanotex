@@ -18,6 +18,18 @@
     "inconsolata": {
       "deps": ["upquote"],
       "_comment": "indirect dep via \\AtBeginDocument"
+    },
+    "tikz": {
+      "meta": true,
+      "deps": ["pgf", "pgf-blur"]
+    },
+    "verbatim": {
+      "meta": true,
+      "deps": ["tools"]
+    },
+    "algorithm": {
+      "meta": true,
+      "deps": ["algorithms"]
     }
   }
 }

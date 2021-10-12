@@ -204,6 +204,7 @@ class PackageRepository {
 
     async probe(pkgs, opts) {
         var tmp = this.opts.tmpdir, fn = path.join(tmp, 'probe.tex');
+        // Prepare input
         fs.mkdirSync(tmp, {recursive: true});
         fs.writeFileSync(fn, `
             \\documentclass${this._pkgref(opts.class ?? 'article')}
@@ -211,8 +212,13 @@ class PackageRepository {
             \\begin{document} \\end{document}
         `);
 
+        // Clean .aux file from a previous run, if any (as it may skew the results)
+        try { fs.unlinkSync(path.join(tmp, 'probe.aux')); } catch { }
+
+        // Run pdflatex
         try { await this._pdflatex(fn); } catch { return; }
 
+        // Analyze pdflatex log file
         var logText = fs.readFileSync(fn.replace(/[.]tex$/, '.log'), 'utf-8'),
             deps = {files: this._parseFileDeps(logText), pkgs: {}},
             idx = this.fileIndex();
