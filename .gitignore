@@ -14,5 +14,8 @@ node_modules
 /tlarchive
 /*.tar
 
+tmp
+missfont.log
+
 # This file is updated by `nanotex probe`
 /data/pkg-info.json
