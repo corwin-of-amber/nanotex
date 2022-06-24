@@ -1,8 +1,10 @@
 {
   "type": "module",
   "dependencies": {
+    "axios": "^0.27.2",
     "child-process-promise": "^2.2.1",
     "commander": "^8.1.0",
-    "glob": "^7.1.7"
+    "glob": "^7.1.7",
+    "progress": "^2.0.3"
   }
 }
