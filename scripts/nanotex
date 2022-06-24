@@ -1,3 +1,3 @@
 #!/bin/bash
 
-exec node $(dirname $0)/nanotex.js "$@"
+exec node $(dirname $0)/../lib/nanotex.js "$@"

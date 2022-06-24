@@ -1,9 +1,14 @@
 TEXLIVE_GIT = git@github.com:TeX-Live/texlive-source.git
 TEXLIVE_GIT_TAG = tags/texlive-2021.3
 
-ENGINES = tex pdftex bibtex
+ENGINES = tex mf gftopk pdftex bibtex
 
-WEB2C_DIR = workdir/texlive-build/texk/web2c
+WEB2C_DIR  = workdir/texlive-build/texk/web2c
+KPSE_DIR   = workdir/texlive-build/texk/kpathsea
+SCRIPT_DIR = workdir/texlive-sources/texk/texlive/linked_scripts/texlive
+
+KPSE_PROGS = kpsewhich kpseaccess kpsestat kpsereadlink
+SCRIPTS = mktexlsr
 
 TLFETCH = ./scripts/tlfetch
 NANOTEX = ./scripts/nanotex
@@ -17,9 +22,14 @@ endif
 
 engines: workdir/texlive-build
 	( cd $(WEB2C_DIR) && make $(ENGINES) )
+	@mkdir -p bin
+	cp ${foreach e, $(ENGINES), $(WEB2C_DIR)/$e} bin/
+	cp ${foreach e, $(KPSE_PROGS), $(KPSE_DIR)/$e} bin/
+	cp ${foreach e, $(SCRIPTS), $(SCRIPT_DIR)/$e} bin/
 
 engines+wasm: workdir/texlive-build
 	( cd $(WEB2C_DIR) && npx wasi-kit make $(ENGINES) )
+	@mkdir -p bin
 	cp ${foreach e, $(ENGINES), $(WEB2C_DIR)/$e.wasm} bin/
 
 clean-engines:
@@ -49,11 +59,12 @@ fetch-boot:
 	$(NANOTEX) font --map pdftex
 
 latex: fetch-latex
+	cd bin && ln -sf pdftex pdflatex
 	touch dist/UnicodeData.txt  # skip pkg `unicode-data`
 	cd dist && ../bin/pdflatex -ini -etex pdflatex.ini
 
 fetch-latex:
-	$(TLFETCH) latex latexconfig l3kernel latex-fonts
+	$(TLFETCH) latex latexconfig l3kernel l3backend latex-fonts
 
 
 metafont: fetch-metafont

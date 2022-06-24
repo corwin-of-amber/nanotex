@@ -11,3 +11,8 @@ for pkg in $@; do
     tar xvf "tlarchive/$pkg.tar.xz" -C tldist 2>&1 | wc -l
     echo
 done
+
+
+export PATH=$(dirname $0)/../bin:$PATH
+
+mktexlsr tldist
