@@ -1,0 +1,32 @@
+\documentclass{article}
+\usepackage[utf8]{inputenc}
+
+\usepackage{graphicx}
+\usepackage{hyperref}
+\usepackage{amsthm}
+\usepackage{amsmath}
+\usepackage{cleveref}
+\usepackage{xcolor}
+\usepackage{comment}
+\usepackage{dsfont}
+
+\usepackage{macros}
+
+\theoremstyle{definition}
+\newtheorem{definition}{Definition}[section]
+\newtheorem{theorem}{Theorem}[section]
+\newtheorem{lemma}[theorem]{Lemma}
+
+\title{Hyper Synthesis}
+\author{Some Dudes}
+\date{August 2020}
+
+\begin{document}
+
+\maketitle
+
+\input{defs-and-chcs}
+\input{dag-interpolation}
+
+\end{document}
+
