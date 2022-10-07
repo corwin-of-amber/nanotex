@@ -1,5 +1,10 @@
 {
+  "name": "nanotex",
+  "version": "0.1.0",
   "type": "module",
+  "bin": {
+    "nanotex": "./lib/nanotex.js"
+  },
   "dependencies": {
     "axios": "^0.27.2",
     "child-process-promise": "^2.2.1",
