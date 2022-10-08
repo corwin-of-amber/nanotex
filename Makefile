@@ -83,6 +83,7 @@ fetch-cm:
 	$(TLFETCH) cm
 
 ec: fetch-ec
+	# This package does not include a font map?
 	$(NANOTEX) font --pk \
 	    ${addprefix ecrm, 0500 0600 0700 0900 1000 1200 1440 1728} \
 		${addprefix ecbx, 0900 1000 1200 1440} \
@@ -98,6 +99,10 @@ lm: fetch-lm
 
 fetch-lm:
 	$(TLFETCH) lm
+
+extra/pkgs: FORCE
+	@mkdir -p $@
+	tar cf extra/pkgs/some-fonts.tar -C dist fonts/compiled
 
 # -- Distribution tarballs --
 
