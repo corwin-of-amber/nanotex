@@ -79,39 +79,10 @@
     },
     "latex": {
       "deps": [
-        "latex-base-dev",
-        "alegreya",
-        "ly1",
-        "arabi",
-        "babel-hebrew",
-        "fira",
-        "fourier",
-        "cyrillic",
-        "droid",
-        "ctib",
-        "greek-fontenc",
-        "tipa",
-        "fc",
-        "lm",
-        "inriafonts",
-        "psnfss",
-        "latex-tools-dev",
-        "tools",
-        "libertine",
-        "librebaskerville",
-        "montex",
-        "noto",
-        "raleway",
-        "roboto",
-        "ucs",
-        "sourcecodepro",
-        "cbfonts-fd",
-        "sourceserifpro",
-        "xcharter",
-        "universalis",
-        "variablelm",
-        "venturisadf",
-        "vntex"
+        "l3kernel",
+        "l3backend",
+        "latex-fonts",
+        "ec"
       ],
       "provides": [
         "alltt",
@@ -6329,6 +6300,10 @@
         "amsmidx",
         "amsthm",
         "upref"
+      ],
+      "deps": [
+        "amsmath",
+        "amsfonts"
       ]
     },
     "amsfonts": {
@@ -27560,6 +27535,44 @@
       ],
       "deps": [
         "iftex"
+      ]
+    },
+    "acmart": {
+      "provides": [
+        "acmart"
+      ],
+      "deps": [
+        "xkeyval",
+        "xstring",
+        "iftex",
+        "amscls",
+        "microtype",
+        "etoolbox",
+        "booktabs",
+        "refcount",
+        "totpages",
+        "environ",
+        "setspace",
+        "textcase",
+        "natbib",
+        "hyperxmp",
+        "hyperref",
+        "graphics",
+        "xcolor",
+        "geometry",
+        "ncctools",
+        "pdftex",
+        "cmap",
+        "latex",
+        "libertine",
+        "inconsolata",
+        "newtx",
+        "caption",
+        "float",
+        "comment",
+        "fancyhdr",
+        "cm",
+        "upquote"
       ]
     }
   }
