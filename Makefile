@@ -1,5 +1,5 @@
 TEXLIVE_GIT = git@github.com:TeX-Live/texlive-source.git
-TEXLIVE_GIT_TAG = tags/texlive-2021.3
+TEXLIVE_GIT_TAG = tags/texlive-2023.0
 
 ENGINES = tex mf gftopk pdftex bibtex
 
@@ -21,16 +21,19 @@ endif
 
 
 engines: workdir/texlive-build
+	( cd $(WEB2C_DIR) && npx wasi-kit make $(ENGINES) )
+	@mkdir -p bin
+	cp ${foreach e, $(ENGINES), $(WEB2C_DIR)/$e $(WEB2C_DIR)/$e.wasm} bin/
+	cp ${foreach e, $(KPSE_PROGS), $(KPSE_DIR)/$e} bin/
+	cp ${foreach e, $(SCRIPTS), $(SCRIPT_DIR)/$e} bin/
+
+# to build without WASM
+engines-native: workdir/texlive-build
 	( cd $(WEB2C_DIR) && make $(ENGINES) )
 	@mkdir -p bin
 	cp ${foreach e, $(ENGINES), $(WEB2C_DIR)/$e} bin/
 	cp ${foreach e, $(KPSE_PROGS), $(KPSE_DIR)/$e} bin/
 	cp ${foreach e, $(SCRIPTS), $(SCRIPT_DIR)/$e} bin/
-
-engines+wasm: workdir/texlive-build
-	( cd $(WEB2C_DIR) && npx wasi-kit make $(ENGINES) )
-	@mkdir -p bin
-	cp ${foreach e, $(ENGINES), $(WEB2C_DIR)/$e.wasm} bin/
 
 clean-engines:
 	( cd $(WEB2C_DIR) && make clean )
@@ -103,6 +106,7 @@ fetch-lm:
 extra/pkgs: FORCE
 	@mkdir -p $@
 	tar cf extra/pkgs/some-fonts.tar -C dist fonts/compiled
+	tar cf extra/pkgs/ls-R.tar -C tldist ls-R
 
 # -- Distribution tarballs --
 

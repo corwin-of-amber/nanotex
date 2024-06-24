@@ -11,5 +11,13 @@
     "bibtex": {
         "output": "bibtex.wasm",
         "args": ["-Wl,-allow-undefined"]
+    },
+    "mf": {
+        "output": "mf.wasm",
+        "args": ["-Wl,-allow-undefined"]
+    },
+    "gftopk": {
+        "output": "gftopk.wasm",
+        "args": ["-Wl,-allow-undefined"]
     }
 }
