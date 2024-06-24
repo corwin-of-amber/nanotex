@@ -1,0 +1,22 @@
+http {
+    proxy_cache_path  /tmp/tlmirror  levels=1:2    keys_zone=STATIC:10m 
+                      inactive=24h  max_size=1g;
+    
+    server {
+        listen 8090;
+
+        location / {
+            proxy_pass https://ftp.cc.uoc.gr/mirrors/CTAN/systems/texlive/tlnet/;
+            proxy_buffering        on;
+            proxy_cache            STATIC;
+            proxy_cache_valid      200  1d;
+            proxy_cache_use_stale  error timeout invalid_header updating
+                                   http_500 http_502 http_503 http_504;            
+        }
+    }
+}
+
+events {
+    worker_connections  1024;
+}
+

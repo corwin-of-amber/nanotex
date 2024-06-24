@@ -1,0 +1,12 @@
+[uwsgi]
+route-uri = ^/tlmirror goto:tlmirror
+route = .* last:
+
+route-label = tlmirror
+route-uri = ^/tlmirror/(.*) seturi:/mirrors/CTAN/systems/texlive/tlnet/$1
+route = .* addheader:Accept: */*
+# ftp.cc.uoc.gr
+route = .* http:147.52.159.12:80
+
+master = true
+
