@@ -10,7 +10,7 @@ SCRIPT_DIR = workdir/texlive-sources/texk/texlive/linked_scripts/texlive
 KPSE_PROGS = kpsewhich kpseaccess kpsestat kpsereadlink
 SCRIPTS = mktexlsr
 
-TLFETCH = ./scripts/tlfetch
+TLFETCH = $(NANOTEX) install
 NANOTEX = ./scripts/nanotex
 DIST = dist
 TLDIST = tldist
@@ -54,20 +54,21 @@ boot: fetch-boot
 	cp ${foreach e, us.def def, $(TLDIST)/tex/generic/config/language.$e}
 	# build formats
 	mkdir -p dist
-	cd dist && ../bin/tex -ini tex.ini
-	cd dist && ../bin/pdftex -ini -etex pdfetex.ini
+	cd dist && ../bin/tex -jobname tex -ini tex.ini
+	cd dist && ../bin/pdftex -jobname pdftex -ini -etex pdfetex.ini
 
 fetch-boot:
+	[ -e node_modules ] || npm install --no-audit
 	$(TLFETCH) plain hyphen-base cm knuth-lib tex-ini-files pdftex etex
 	$(NANOTEX) font --map pdftex
 
 latex: fetch-latex
 	cd bin && ln -sf pdftex pdflatex
-	touch dist/UnicodeData.txt  # skip pkg `unicode-data`
-	cd dist && ../bin/pdflatex -ini -etex pdflatex.ini
+	# touch dist/UnicodeData.txt  # skip pkg `unicode-data`
+	cd dist && ../bin/pdflatex -interaction=nonstopmode -ini -etex pdflatex.ini
 
 fetch-latex:
-	$(TLFETCH) latex latexconfig l3kernel l3backend latex-fonts
+	$(TLFETCH) latex latexconfig l3kernel l3backend latex-fonts unicode-data
 
 
 metafont: fetch-metafont
@@ -107,6 +108,14 @@ extra/pkgs: FORCE
 	@mkdir -p $@
 	tar cf extra/pkgs/some-fonts.tar -C dist fonts/compiled
 	tar cf extra/pkgs/ls-R.tar -C tldist ls-R
+
+# -- Distribution tarballs --
+
+clean-slate:
+	rm -rf workdir bin tlarchive tldist dist
+
+clean-distro:
+	rm -rf tlarchive tldist dist
 
 # -- Distribution tarballs --
 
