@@ -1,5 +1,5 @@
 TEXLIVE_GIT = git@github.com:TeX-Live/texlive-source.git
-TEXLIVE_GIT_TAG = tags/texlive-2023.0
+TEXLIVE_GIT_TAG = tags/texlive-2025.0
 
 ENGINES = tex mf gftopk pdftex bibtex
 
@@ -64,12 +64,15 @@ fetch-boot:
 
 latex: fetch-latex
 	cd bin && ln -sf pdftex pdflatex
-	# touch dist/UnicodeData.txt  # skip pkg `unicode-data`
 	cd dist && ../bin/pdflatex -interaction=nonstopmode -ini -etex pdflatex.ini
 
 fetch-latex:
 	$(TLFETCH) latex latexconfig l3kernel l3backend latex-fonts unicode-data
 
+
+fonts:
+	# needed for Type 1 fonts
+	$(TLFETCH) amsfonts
 
 metafont: fetch-metafont
 	./bin/mf -ini '\input plain; input modes; dump'

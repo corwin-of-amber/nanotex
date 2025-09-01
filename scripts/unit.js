@@ -12,8 +12,7 @@ function main() {
     o.parse(process.argv);
 
     for (let fn of o.args) {
-        let prog = fn.endsWith('.ltx') ? 'pdflatex' : 'pdftex';
-        if (fs.readFileSync(fn, 'utf-8').match(/documentclass/)) prog = 'pdflatex';
+        let prog = detectType(fn);
         try {
             child_process.execFileSync(`./bin/${prog}`,
                 ['-interaction=nonstopmode', '-output-directory=tmp', fn],
@@ -21,6 +20,14 @@ function main() {
         }
         catch (e) { console.log('command execution failed.'); break; }
     }
+}
+
+function detectType(fn) {
+    if (fn.endsWith('.ltx')) return 'pdflatex';
+    if (fs.readFileSync(fn, 'utf-8').match(/documentclass/))
+        return 'pdflatex';
+    else
+        return 'pdftex';
 }
 
 

@@ -5,6 +5,9 @@
   "bin": {
     "nanotex": "./lib/nanotex.js"
   },
+  "browser": {
+    "axios": {}
+  },
   "dependencies": {
     "axios": "^1.7.2",
     "child-process-promise": "^2.2.1",

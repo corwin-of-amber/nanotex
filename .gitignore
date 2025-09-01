@@ -2,15 +2,17 @@
 .swp
 .DS_Store
 /tmp
-/missfont.log
+/*.log
 
 _build
 node_modules
 /workdir
+/workdir.*
 
 /bin
 /dist
 /tldist
+/tldist.*
 /tlarchive
 /*.tar
 /extra/pkgs
