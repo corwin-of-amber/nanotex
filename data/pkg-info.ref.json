@@ -1,0 +1,364 @@
+{
+  "description": "This is a rather minimal package dependency file to be used as a reference",
+  "packages": {
+    "latex": {
+      "deps": [
+        "amsfonts",
+        "cite",
+        "modes",
+        "metafont",
+        "l3kernel",
+        "cm",
+        "amsmath",
+        "hyphen-base",
+        "pdftex",
+        "etex",
+        "latex-fonts",
+        "amscls",
+        "l3backend",
+        "plain",
+        "tex-ini-files",
+        "latexconfig",
+        "knuth-lib",
+        "ec"
+      ]
+    },
+    "lmodern": {
+      "meta": true,
+      "deps": [
+        "lm"
+      ]
+    },
+    "acmart": {
+      "deps": [
+        "xkeyval",
+        "xstring",
+        "iftex",
+        "amscls",
+        "microtype",
+        "etoolbox",
+        "booktabs",
+        "refcount",
+        "totpages",
+        "environ",
+        "setspace",
+        "textcase",
+        "natbib",
+        "hyperxmp",
+        "hyperref",
+        "graphics",
+        "xcolor",
+        "geometry",
+        "ncctools",
+        "pdftex",
+        "cmap",
+        "latex",
+        "libertine",
+        "inconsolata",
+        "newtx",
+        "caption",
+        "float",
+        "comment",
+        "fancyhdr",
+        "preprint",
+        "pbalance"
+      ]
+    },
+    "amscls": {
+      "deps": [
+        "amsmath",
+        "amsfonts"
+      ]
+    },
+    "refcount": {
+      "deps": [
+        "ltxcmds",
+        "infwarerr"
+      ]
+    },
+    "totpages": {
+      "deps": [
+        "everyshi"
+      ]
+    },
+    "environ": {
+      "deps": [
+        "trimspaces"
+      ]
+    },
+    "hyperxmp": {
+      "deps": [
+        "kvoptions",
+        "pdfescape",
+        "stringenc",
+        "intcalc",
+        "ifmtarg",
+        "latex",
+        "oberdiek",
+        "iftex"
+      ]
+    },
+    "kvoptions": {
+      "deps": [
+        "kvsetkeys",
+        "ltxcmds"
+      ]
+    },
+    "pdfescape": {
+      "deps": [
+        "pdftexcmds",
+        "ltxcmds"
+      ]
+    },
+    "hyperref": {
+      "deps": [
+        "kvdefinekeys",
+        "hycolor",
+        "letltxmacro",
+        "auxhook",
+        "etexcmds",
+        "url",
+        "bitset",
+        "latex",
+        "rerunfilecheck",
+        "gettitlestring",
+        "ltxcmds",
+        "iftex",
+        "pdftexcmds",
+        "graphics",
+        "kvsetkeys",
+        "pdfescape",
+        "kvoptions",
+        "intcalc",
+        "refcount"
+      ]
+    },
+    "bitset": {
+      "deps": [
+        "bigintcalc"
+      ]
+    },
+    "rerunfilecheck": {
+      "deps": [
+        "uniquecounter"
+      ]
+    },
+    "graphics": {
+      "deps": [
+        "graphics-cfg",
+        "graphics-def",
+        "latex"
+      ]
+    },
+    "xcolor": {
+      "deps": [
+        "graphics-cfg",
+        "graphics-def"
+      ]
+    },
+    "geometry": {
+      "deps": [
+        "iftex",
+        "graphics"
+      ]
+    },
+    "libertine": {
+      "deps": [
+        "iftex",
+        "latex",
+        "fontaxes"
+      ]
+    },
+    "newtx": {
+      "deps": [
+        "oberdiek",
+        "kastrup"
+      ]
+    },
+    "inconsolata": {
+      "deps": [
+        "latex",
+        "xkeyval",
+        "upquote"
+      ]
+    },
+    "caption": {
+      "deps": [
+        "graphics"
+      ]
+    },
+    "pgf": {
+      "deps": [
+        "graphics",
+        "xcolor"
+      ]
+    },
+    "tikz": {
+      "meta": true,
+      "deps": [
+        "pgf",
+        "pgf-blur"
+      ]
+    },
+    "todonotes": {
+      "deps": [
+        "latex",
+        "xkeyval",
+        "xcolor",
+        "pgf",
+        "tools"
+      ]
+    },
+    "verbatim": {
+      "meta": true,
+      "deps": [
+        "tools"
+      ]
+    },
+    "standalone": {
+      "deps": [
+        "tools",
+        "iftex",
+        "xkeyval",
+        "latex"
+      ]
+    },
+    "biblatex": {
+      "deps": [
+        "pdftexcmds",
+        "etoolbox",
+        "graphics",
+        "kvoptions",
+        "logreq",
+        "latex",
+        "url",
+        "l3packages"
+      ]
+    },
+    "pdftexcmds": {
+      "deps": [
+        "infwarerr",
+        "iftex",
+        "ltxcmds"
+      ]
+    },
+    "logreq": {
+      "deps": [
+        "etoolbox",
+        "graphics"
+      ]
+    },
+    "mathtools": {
+      "deps": [
+        "graphics",
+        "tools",
+        "amsmath"
+      ]
+    },
+    "graphics-def": {
+      "deps": [
+        "mptopdf"
+      ]
+    },
+    "algorithms": {
+      "deps": [
+        "float",
+        "latex"
+      ]
+    },
+    "algorithmicx": {
+      "deps": [
+        "latex"
+      ],
+      "provides": [
+        "algc",
+        "algcompatible",
+        "algmatlab",
+        "algorithmicx",
+        "algpascal",
+        "algpseudocode"
+      ]
+    },
+    "units": {
+      "deps": [
+        "latex"
+      ]
+    },
+    "algorithm": {
+      "meta": true,
+      "deps": [
+        "algorithms"
+      ]
+    },
+    "listings": {
+      "deps": [
+        "graphics"
+      ]
+    },
+    "pgfplots": {
+      "deps": [
+        "graphics",
+        "pgf"
+      ]
+    },
+    "slantsc": {
+      "deps": [
+        "latex"
+      ]
+    },
+    "adjustbox": {
+      "deps": [
+        "xkeyval",
+        "graphics",
+        "collectbox"
+      ]
+    },
+    "menukeys": {
+      "deps": [
+        "l3packages",
+        "xstring",
+        "etoolbox",
+        "pgf",
+        "adjustbox",
+        "relsize",
+        "kvoptions"
+      ]
+    },
+    "l3packages": {
+      "deps": [
+        "l3kernel"
+      ]
+    },
+    "l3kernel": {
+      "deps": [
+        "l3backend"
+      ]
+    },
+    "zref": {
+      "deps": [
+        "ltxcmds",
+        "infwarerr",
+        "kvsetkeys",
+        "kvdefinekeys",
+        "pdftexcmds",
+        "etexcmds",
+        "auxhook",
+        "graphics",
+        "kvoptions",
+        "latex",
+        "uniquecounter",
+        "gettitlestring"
+      ]
+    },
+    "uniquecounter": {
+      "deps": [
+        "bigintcalc"
+      ]
+    },
+    "gettitlestring": {
+      "deps": [
+        "kvoptions"
+      ]
+    }
+  }
+}

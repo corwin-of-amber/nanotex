@@ -1446,7 +1446,8 @@
         "gettitlestring",
         "rerunfilecheck",
         "stringenc",
-        "kvoptions"
+        "kvoptions",
+        "etoolbox"
       ],
       "provides": [
         "backref",
@@ -10059,7 +10060,8 @@
         "tools",
         "eso-pic",
         "graphics",
-        "latex-graphics-dev"
+        "latex-graphics-dev",
+        "pdflscape"
       ],
       "provides": [
         "pdfpages"
