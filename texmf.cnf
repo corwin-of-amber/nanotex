@@ -3,6 +3,7 @@ ROOT = $SELFAUTODIR
 
 DROOT = $ROOT/dist
 TLROOT = $ROOT/tldist
+TEXMFROOT = $TLROOT/texmf-dist
 
 TEXFORMATS = $DROOT:$DROOT//
 
@@ -11,7 +12,7 @@ TEXMFDBS = {$TLROOT}
 TFMFONTS = $DROOT/fonts//:$TLROOT/fonts//
 T1FONTS = $DROOT/fonts//:$TLROOT/fonts//
 PKFONTS = $DROOT/fonts//:$TLROOT/fonts//
-ENCFONTS = $TLROOT/fonts/enc//:$TLROOT/texmf-dist/fonts/enc//
+ENCFONTS = $TLROOT/fonts/enc//:$TEXMFROOT/fonts/enc//
 VFFONTS = $TLROOT/fonts/vf//
 
 TEXFONTMAPS = $DROOT
